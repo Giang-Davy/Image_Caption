@@ -8,6 +8,23 @@ import torch
 from torchvision import transforms, models
 import torch.nn as nn
 from transformers import GPT2Tokenizer
+import ast
+
+with open("food_list.txt", "r", encoding="utf-8") as f:
+    contenu = f.read()
+list_food = ast.literal_eval(contenu)
+
+animal_list = ["dog", "dogs", "cat", "cats", "horse", "horses", "cow", "cows", "sheep", "goat", "goats",
+"pig", "pigs", "chicken", "chickens", "duck", "ducks", "bird", "birds", "rabbit", "rabbits",
+"mouse", "mice", "rat", "rats", "elephant", "elephants", "lion", "lions", "tiger", "tigers",
+"bear", "bears", "zebra", "zebras", "giraffe", "giraffes", "monkey", "monkeys", "ape", "apes",
+"gorilla", "gorillas", "kangaroo", "kangaroos", "wolf", "wolves", "fox", "foxes", "deer",
+"camel", "camels", "donkey", "donkeys", "buffalo", "buffaloes", "leopard", "leopards",
+"cheetah", "cheetahs", "crocodile", "crocodiles", "alligator", "alligators", "snake", "snakes",
+"lizard", "lizards", "turtle", "turtles", "frog", "frogs", "fish", "whale", "whales",
+"dolphin", "dolphins", "shark", "sharks", "seal", "seals", "penguin", "penguins", "owl", "owls",
+"eagle", "eagles", "hawk", "hawks", "parrot", "parrots", "goose", "geese", "turkey", "turkeys",
+"swan", "swans"]
 
 # === Modèle Caption ===
 class EncoderCNN(nn.Module):
@@ -70,7 +87,9 @@ app = Flask(__name__)
 client = MongoClient("mongodb://localhost:27017/")
 db = client["Data"]
 fs = gridfs.GridFS(db)
-captions_collection = db["captions"]  # nouvelle collection pour stocker captions
+captions_collection = db["captions"]
+animals_collection = db["animals"]
+food_collection = db["foods"]
 
 # === Routes ===
 @app.route("/", methods=["GET"])
@@ -113,8 +132,32 @@ def upload():
 
     # Stocker la caption dans MongoDB
     captions_collection.insert_one({"file_id": file_id, "caption": caption_text})
+    caption_text = caption_text.lower()  # mettre en minuscule pour éviter les problèmes de casse
+    caption_words = caption_text.split()
+    is_animal = any(mot in caption_words for mot in animal_list) # vérifier si un mot de la liste des animaux se trouve dans la caption et non une sous-chaîne 
+    is_food = False
 
-    return f"File uploaded and caption generated:<br><b>{caption_text}</b><br><a href='/'>Retour</a>"
+    for mot_food in list_food:
+        if mot_food in caption_text:
+            is_food = True
+            break
+    if is_food:
+        food_collection.insert_one({
+            "file_id": file_id,
+            "caption": caption_text,
+            "is_food": True
+        })
+
+
+    # Logique de retour corrigée
+    if is_animal and not is_food:
+        return f"ANIMAL File uploaded and caption generated:<br><b>{caption_text}</b><br><a href='/'>Retour</a>"
+    elif is_food and not is_animal:
+        return f"FOOD File uploaded and caption generated:<br><b>{caption_text}</b><br><a href='/'>Retour</a>"
+    elif is_animal and is_food:
+        return f"ANIMAL & FOOD File uploaded and caption generated:<br><b>{caption_text}</b><br><a href='/'>Retour</a>"
+    else:
+        return f"File uploaded and caption generated:<br><b>{caption_text}</b><br><a href='/'>Retour</a>"
 
 @app.route("/images", methods=["GET"])
 def show_images():
@@ -128,6 +171,9 @@ def show_images():
 
     return render_template_string("""
         <h2>Images Uploadées</h2>
+        <form action="/delete_all" method="post" style="margin-bottom:20px;">
+            <input type="submit" value="Tout supprimer" style="background-color:red;color:white;">
+        </form>
         {% for item in images %}
             <img src="data:image/jpeg;base64,{{ item.img }}" style="max-width:300px; margin:10px;"><br>
             <p>{{ item.caption }}</p>
@@ -137,6 +183,15 @@ def show_images():
         {% endfor %}
         <a href="/">Retour à l'upload</a>
     """, images=images_with_captions)
+
+@app.route("/delete_all", methods=["POST"])
+def delete_all():
+    # Supprimer toutes les images de GridFS
+    for file in fs.find():
+        fs.delete(file._id)
+    # Supprimer toutes les captions
+    captions_collection.delete_many({})
+    return "Toutes les images et captions ont été supprimées.<br><a href='/images'>Retour</a>"
 
 @app.route("/delete/<file_id>", methods=["POST"])
 def delete(file_id):
