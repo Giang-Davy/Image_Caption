@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from flask import Blueprint, request, render_template_string, session, redirect
+from flask import Blueprint, request, render_template, session, redirect
 from PIL import Image
 import torch
 from config import fs, captions_collection, food_collection, device
@@ -12,16 +12,8 @@ upload_bp = Blueprint("upload", __name__)
 def index():
     if "user_id" not in session:
         return redirect("/login")
-    return render_template_string("""
-        <h2>Upload Image</h2>
-        <form action="/upload" method="post" enctype="multipart/form-data">
-            <input type="file" name="file">
-            <input type="submit" value="Upload">
-        </form>
-        <a href="/images">Voir toutes les images</a>
-        <br>
-        <a href="/logout">Se déconnecter</a>
-    """)
+    return render_template("upload.html")
+
 
 @upload_bp.route("/upload", methods=["POST"])
 def upload():
@@ -29,7 +21,7 @@ def upload():
         return redirect("/login")
 
     if "file" not in request.files or request.files["file"].filename == "":
-        return "No file uploaded", 400
+        return render_template("upload.html", error="Aucun fichier uploadé.")
 
     file = request.files["file"]
     file_id = fs.put(file, filename=file.filename)
@@ -67,11 +59,4 @@ def upload():
             "user_id": session['user_id']
         })
 
-    if is_animal and not is_food:
-        return f"ANIMAL File uploaded and caption generated:<br><b>{caption_text}</b><br><a href='/'>Retour</a>"
-    elif is_food and not is_animal:
-        return f"FOOD File uploaded and caption generated:<br><b>{caption_text}</b><br><a href='/'>Retour</a>"
-    elif is_animal and is_food:
-        return f"ANIMAL & FOOD File uploaded and caption generated:<br><b>{caption_text}</b><br><a href='/'>Retour</a>"
-    else:
-        return f"File uploaded and caption generated:<br><b>{caption_text}</b><br><a href='/'>Retour</a>"
+    return render_template("upload.html", caption=caption_text, is_animal=is_animal, is_food=is_food)
