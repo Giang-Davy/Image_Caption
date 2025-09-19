@@ -21,7 +21,7 @@ def upload():
         return redirect("/login")
 
     if "file" not in request.files or request.files["file"].filename == "":
-        return render_template("upload.html", error="Aucun fichier uploadé.")
+        return render_template("upload.html", error="No files uploaded")
 
     file = request.files["file"]
     file_id = fs.put(file, filename=file.filename)

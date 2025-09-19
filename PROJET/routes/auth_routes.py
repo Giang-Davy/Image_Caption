@@ -14,7 +14,7 @@ def register():
         password = request.form.get("password") or ""
 
         if not username or not email or not password:
-            return render_template("register.html", error="Tous les champs sont requis.")
+            return render_template("register.html", error="All field must be completed.")
 
         password_hash = hashlib.sha256(password.encode()).hexdigest()
 
@@ -27,7 +27,7 @@ def register():
             )
             conn.commit()
         except mysql.connector.IntegrityError:
-            return render_template("register.html", error="Nom d'utilisateur ou email déjà utilisé.")
+            return render_template("register.html", error="Email already used.")
         finally:
             cursor.close()
             conn.close()
@@ -44,7 +44,7 @@ def login():
         password = request.form.get("password") or ""
 
         if not username or not password:
-            return render_template("login.html", error="Tous les champs sont requis.")
+            return render_template("login.html", error="All field must be completed.")
 
         password_hash = hashlib.sha256(password.encode()).hexdigest()
 
@@ -65,7 +65,7 @@ def login():
             session['username'] = user['username']
             return redirect("/")
         else:
-            return render_template("login.html", error="Nom d'utilisateur ou mot de passe incorrect.")
+            return render_template("login.html", error="User name or password incorrect")
 
     return render_template("login.html")
 
