@@ -4,7 +4,7 @@
 <h2 class="mb-4">Mes Images Uploadées</h2>
 
 <form action="/delete_all" method="post" class="mb-4">
-    <button type="submit" class="btn btn-danger">Tout supprimer</button>
+    <button type="submit" class="btn btn-danger">Delete all</button>
 </form>
 
 <div class="row">
@@ -15,7 +15,7 @@
             <div class="card-body">
                 <p class="card-text">{{ item.caption }}</p>
                 <form action="/delete/{{ item.file_id }}" method="post">
-                    <button type="submit" class="btn btn-sm btn-outline-danger">Supprimer</button>
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
                 </form>
             </div>
         </div>

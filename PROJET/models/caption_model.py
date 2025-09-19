@@ -5,7 +5,7 @@ from torchvision import models, transforms
 from transformers import GPT2Tokenizer
 from config import device, embed_size, hidden_size, vocab_size
 
-# === Classes modèle ===
+# === Model Class ===
 class EncoderCNN(nn.Module):
     def __init__(self, embed_size):
         super().__init__()
@@ -44,7 +44,7 @@ class ImageCaptioningModel(nn.Module):
         outputs = self.decoder(features, captions)
         return outputs
 
-# === Préparation modèle ===
+# === Preparin the model ===
 model = ImageCaptioningModel(embed_size, hidden_size, vocab_size).to(device)
 model.load_state_dict(torch.load("checkpoint_epoch3.pth", map_location=device))
 model.eval()

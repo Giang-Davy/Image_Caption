@@ -44,12 +44,12 @@ class COCODataset(Dataset):
         if self.transform:
             image = self.transform(image)
 
-        caption = self.captions[img_id][0]  # première caption
+        caption = self.captions[img_id][0]  # first caption
         tokens = self.tokenizer.encode(caption, truncation=True, padding="max_length", max_length=self.max_len, return_tensors="pt").squeeze(0)
         return image, tokens
 
 # ============================
-# Modèle Encoder + Decoder
+# Model Encoder + Decoder
 # ============================
 class EncoderCNN(nn.Module):
     def __init__(self, embed_size):
@@ -95,7 +95,7 @@ class ImageCaptioningModel(nn.Module):
         return outputs
 
 # ============================
-# Préparation
+# Preparation
 # ============================
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
@@ -125,7 +125,7 @@ criterion = nn.CrossEntropyLoss(ignore_index=tokenizer.pad_token_id)
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # ============================
-# Entraînement
+# Train
 # ============================
 num_epochs = 3
 
@@ -154,4 +154,4 @@ if __name__ == "__main__":
 
         print(f"Epoch {epoch+1} finished - Average Loss: {avg_loss:.4f}")
         torch.save(model.state_dict(), f"checkpoint_epoch{epoch+1}.pth")
-        print(f"✅ Modèle sauvegardé: checkpoint_epoch{epoch+1}.pth")
+        print(f"✅ Model saved: checkpoint_epoch{epoch+1}.pth")

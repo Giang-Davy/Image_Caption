@@ -5,7 +5,7 @@ def init_db():
     conn = get_connection()
     cursor = conn.cursor()
     
-    # Table utilisateurs
+    # User table
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -15,7 +15,7 @@ def init_db():
     )
     """)
     
-    # Table historique (lié aux utilisateurs)
+    # History Table (for each users)
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS history (
         id INT AUTO_INCREMENT PRIMARY KEY,

@@ -7,7 +7,7 @@ import torch.nn as nn
 from transformers import GPT2Tokenizer
 
 # ============================
-# Définition du modèle
+# Define the model
 # ============================
 class EncoderCNN(nn.Module):
     def __init__(self, embed_size):
@@ -51,7 +51,7 @@ class ImageCaptioningModel(nn.Module):
         return outputs
 
 # ============================
-# Paramètres
+# Settings
 # ============================
 embed_size = 256
 hidden_size = 512
@@ -59,7 +59,7 @@ vocab_size = 50257  # GPT-2 vocab size
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # ============================
-# Charger le modèle et tokenizer
+# Load the model and the tokenizer
 # ============================
 model = ImageCaptioningModel(embed_size, hidden_size, vocab_size).to(device)
 checkpoint_path = "checkpoint_epoch3.pth"
@@ -69,7 +69,7 @@ model.eval()
 tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 
 # ============================
-# Préparer l'image
+# Preparing the image
 # ============================
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
@@ -80,7 +80,7 @@ image = Image.open(image_path).convert("RGB")
 image = transform(image).unsqueeze(0).to(device)
 
 # ============================
-# Génération de caption
+# Generate the caption
 # ============================
 # On commence avec le token de début
 input_ids = torch.tensor([tokenizer.bos_token_id]).unsqueeze(0).to(device)

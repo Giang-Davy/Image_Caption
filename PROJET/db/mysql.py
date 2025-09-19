@@ -1,11 +1,11 @@
 import mysql.connector
 
-# Connexion à MySQL
+# Connection on MySQL (the local)
 def get_connection():
     conn = mysql.connector.connect(
         host="localhost",
-        user="root",       # remplace par ton utilisateur MySQL
-        password="Gkc19Dur!!!!",    # remplace par ton mot de passe MySQL
-        database="user_db"            # nom de la base que tu as créée
+        user="root",
+        password="Gkc19Dur!!!!",
+        database="user_db"
     )
     return conn

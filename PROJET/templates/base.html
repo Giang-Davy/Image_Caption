@@ -14,11 +14,11 @@
       <ul class="navbar-nav ms-auto">
         {% if session.get("user_id") %}
           <li class="nav-item"><a class="nav-link" href="/">Upload</a></li>
-          <li class="nav-item"><a class="nav-link" href="/images">Mes Images</a></li>
-          <li class="nav-item"><a class="nav-link" href="/logout">Déconnexion</a></li>
+          <li class="nav-item"><a class="nav-link" href="/images">My images</a></li>
+          <li class="nav-item"><a class="nav-link" href="/logout">Deconnection</a></li>
         {% else %}
-          <li class="nav-item"><a class="nav-link" href="/login">Connexion</a></li>
-          <li class="nav-item"><a class="nav-link" href="/register">Inscription</a></li>
+          <li class="nav-item"><a class="nav-link" href="/login">Connection</a></li>
+          <li class="nav-item"><a class="nav-link" href="/register">Sign Up</a></li>
         {% endif %}
       </ul>
     </div>
