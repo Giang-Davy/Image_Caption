@@ -54,7 +54,7 @@ class ImageCaptioningModel(nn.Module):
         outputs = self.decoder(features, captions)
         return outputs
 
-# ====== Tokenizer et transform ======
+# ====== Tokenizer and transform ======
 tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 tokenizer.pad_token = tokenizer.eos_token
 vocab_size = tokenizer.vocab_size
@@ -64,12 +64,12 @@ transform = transforms.Compose([
     transforms.ToTensor()
 ])
 
-# ====== Charger les checkpoints ======
+# ====== load checkpoints ======
 model_caption = ImageCaptioningModel(EMBED_SIZE, HIDDEN_SIZE, vocab_size).to(device)
 model_caption.load_state_dict(torch.load("checkpoint_epoch3.pth", map_location=device))
 model_caption.eval()
 
-# Classifieur oiseaux (embedding 256)
+# Classifer of bird
 class BirdClassifier(nn.Module):
     def __init__(self, embed_size=EMBED_SIZE, num_classes=200):
         super().__init__()
@@ -82,7 +82,7 @@ classifier_bird = BirdClassifier().to(device)
 classifier_bird.load_state_dict(torch.load("bird_classifier_256.pth", map_location=device))
 classifier_bird.eval()
 
-# ====== Génération caption avec remplacement ======
+# ====== Generating the caption======
 def generate_caption_with_species(image_path):
     image = Image.open(image_path).convert("RGB")
     image = transform(image).unsqueeze(0).to(device)
@@ -90,7 +90,6 @@ def generate_caption_with_species(image_path):
     # Encoder
     features = model_caption.encoder(image)
 
-    # Caption général
     input_ids = torch.tensor([tokenizer.bos_token_id]).unsqueeze(0).to(device)
     caption_tokens = input_ids
     for _ in range(MAX_LEN):
@@ -101,17 +100,17 @@ def generate_caption_with_species(image_path):
             break
     general_caption = tokenizer.decode(caption_tokens.squeeze(), skip_special_tokens=True)
 
-    # Prédire l'espèce
+    # Prediction of the bird
     bird_logits = classifier_bird(features)
     bird_class = torch.argmax(bird_logits, dim=1).item() + 1
     bird_name = bird_names[bird_class]
 
-    # Remplacer "oiseau" par le nom de l'espèce
+    # Replace the word "bird" by the real type of bird
     final_caption = general_caption.replace("bird", bird_name)
 
     return final_caption
 
-# ====== Exemple ======
+# ====== Example ======
 if __name__ == "__main__":
     img_path = "bird1.jpg"
     caption = generate_caption_with_species(img_path)
