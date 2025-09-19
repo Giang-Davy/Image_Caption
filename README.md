@@ -43,7 +43,7 @@ pip install -r requirements.txt
 
 **📥 COCO Dataset**
 
-Download the COCO dataset from kaggle.com : https://www.kaggle.com/datasets/awsaf49/coco-2017-dataset and place images and annotations in PROJET/data/COCO.
+Download the COCO dataset on kaggle.com : https://www.kaggle.com/datasets/awsaf49/coco-2017-dataset and place the folder /images and /annotations in PROJET/data/COCO.
 
 **Training**
 Run the training script trainGPT2.py to fine-tune the Show-and-Tell model with the dataset COCO:
@@ -81,6 +81,11 @@ Then open your browser and go to:
 ```bash
 http://127.0.0.1:5000
 ```
+
+
+**Next step**
+
+You can test the code from /not_implemented_yet to test the caption with the recognization for the type of bird, the dataset is already here.
 
 **Infomartion**
 
