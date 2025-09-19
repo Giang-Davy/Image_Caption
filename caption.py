@@ -82,7 +82,6 @@ image = transform(image).unsqueeze(0).to(device)
 # ============================
 # Generate the caption
 # ============================
-# On commence avec le token de début
 input_ids = torch.tensor([tokenizer.bos_token_id]).unsqueeze(0).to(device)
 
 max_len = 20
