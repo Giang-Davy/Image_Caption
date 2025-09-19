@@ -43,7 +43,7 @@ pip install -r requirements.txt
 
 **📥 COCO Dataset**
 
-Download the COCO dataset on kaggle.com : https://www.kaggle.com/datasets/awsaf49/coco-2017-dataset and place the folder /images and /annotations in PROJET/data/COCO.
+Download the COCO dataset on kaggle.com : https://www.kaggle.com/datasets/awsaf49/coco-2017-dataset and place the folder /images and /annotations in Project/data/COCO.
 
 **Training**
 Run the training script trainGPT2.py to fine-tune the Show-and-Tell model with the dataset COCO:
@@ -74,7 +74,7 @@ Install MySQL and create a database for the app with this link : https://dev.mys
 
 You can run the web interface using app.py to upload images and generate captions interactively.
 ```bash
-python PROJET/app.py
+python Project/app.py
 ```
 
 Then open your browser and go to:
