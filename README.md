@@ -18,8 +18,8 @@ Key features:
 
 1. **Clone the repository**
 ```bash
-git clone https://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@github.com/Giang-Davy/Portfolio.git
-cd Portfolio
+git clone https://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@github.com/Giang-Davy/Image_Caption.git
+cd Image_Caption
 ```
 
 2. **Create a virtual environment**
@@ -60,7 +60,7 @@ To generate captions for a new image, run in /test:
 python caption.py
 ```
 
-Update the image path in caption.py:
+Update the image path in caption.py, you can find some images in the folder /images (i used this for testing my code):
 ```bash
 image_path = "images/image.jpg"
 ```
