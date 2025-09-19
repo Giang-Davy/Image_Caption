@@ -14,7 +14,7 @@ Key features:
 
 - Works with both general and domain-specific objects (e.g., food).
 
-**Installation**
+**⚙️Installation**
 
 1. **Clone the repository**
 ```bash
@@ -41,7 +41,7 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-**COCO Dataset**
+**📥 COCO Dataset**
 
 Download the COCO dataset from kaggle.com : https://www.kaggle.com/datasets/awsaf49/coco-2017-dataset and place images and annotations in PROJET/data/COCO.
 
@@ -52,7 +52,7 @@ Run the training script trainGPT2.py to fine-tune the Show-and-Tell model with t
 python trainGPT2.py
 ```
 
-**Caption Generation**
+**🖼️ Caption Generation**
 
 To generate captions for a new image, run in /test:
 
@@ -65,12 +65,12 @@ Update the image path in caption.py:
 image_path = "images/image.jpg"
 ```
 
-**MySQL Setup**
+**🛢️ MySQL Setup**
 
 The web interface requires a MySQL server.
-Install MySQL and create a database for the app with this link
+Install MySQL and create a database for the app with this link : https://dev.mysql.com/downloads/mysql/8.4.html
 
-**Web Interface**
+**🌐 Web Interface**
 
 You can run the web interface using app.py to upload images and generate captions interactively.
 ```bash
