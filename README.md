@@ -14,7 +14,7 @@ Key features:
 
 - Works with both general and domain-specific objects (e.g., food).
 
-**⚙️Installation**
+**⚙️ Installation**
 
 1. **Clone the repository**
 ```bash
@@ -81,3 +81,8 @@ Then open your browser and go to:
 ```bash
 http://127.0.0.1:5000
 ```
+
+**Infomartion**
+This project was made by Dang-Vu Davy for the final exam of Holberton Shool and the certification RNCP 6 - Application Developer Designer
+
+My email : davy.dangvu@gmail.com
