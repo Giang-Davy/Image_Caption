@@ -2,7 +2,7 @@
 from flask import Blueprint, request, render_template, session, redirect
 from PIL import Image
 import torch
-from config import fs, captions_collection, food_collection, device
+from config import fs, captions_collection, food_collection, animals_collection, device
 from models.caption_model import model, tokenizer, transform
 from utils.caption_utils import contains_animal, contains_food
 
@@ -21,7 +21,7 @@ def upload():
         return redirect("/login")
 
     if "file" not in request.files or request.files["file"].filename == "":
-        return render_template("upload.html", error="No files uploaded")
+        return render_template("upload.html", error="Aucun fichier uploadé.")
 
     file = request.files["file"]
     file_id = fs.put(file, filename=file.filename)
@@ -42,21 +42,31 @@ def upload():
 
     caption_text = tokenizer.decode(caption_tokens.squeeze(), skip_special_tokens=True)
 
-    captions_collection.insert_one({
-        "file_id": file_id,
-        "caption": caption_text,
-        "user_id": session['user_id']
-    })
-
     is_animal = contains_animal(caption_text)
     is_food = contains_food(caption_text)
 
+    captions_collection.insert_one({
+        "file_id": file_id,
+        "caption": caption_text,
+        "user_id": session['user_id'],
+        "is_animal": is_animal,
+        "is_food": is_food
+    })
+
+    # Splited collections
     if is_food:
         food_collection.insert_one({
             "file_id": file_id,
             "caption": caption_text,
-            "is_food": True,
-            "user_id": session['user_id']
+            "user_id": session['user_id'],
+            "is_food": True
+        })
+    if is_animal:
+        animals_collection.insert_one({
+            "file_id": file_id,
+            "caption": caption_text,
+            "user_id": session['user_id'],
+            "is_animal": True
         })
 
     return render_template("upload.html", caption=caption_text, is_animal=is_animal, is_food=is_food)

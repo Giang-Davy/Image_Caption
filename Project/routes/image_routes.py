@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from flask import Blueprint, render_template, session, redirect
+from flask import Blueprint, render_template, session, redirect, request
 from config import fs, captions_collection
 import base64
 from bson import ObjectId
@@ -12,9 +12,22 @@ def show_images():
         return redirect("/login")
 
     user_id = session['user_id']
+    category = request.args.get("category", "all")  # all, animal, food, general
+
     images_with_captions = []
 
-    for caption_doc in captions_collection.find({"user_id": user_id}):
+    if category == "all":
+        query = {"user_id": user_id}
+    elif category == "animal":
+        query = {"user_id": user_id, "is_animal": True}
+    elif category == "food":
+        query = {"user_id": user_id, "is_food": True}
+    elif category == "general":
+        query = {"user_id": user_id, "is_animal": False, "is_food": False}
+    else:
+        query = {"user_id": user_id}
+
+    for caption_doc in captions_collection.find(query):
         file_id = caption_doc["file_id"]
         try:
             file = fs.get(file_id)
@@ -29,7 +42,7 @@ def show_images():
         except Exception:
             continue
 
-    return render_template("images.html", images=images_with_captions)
+    return render_template("images.html", images=images_with_captions, category=category)
 
 
 @image_bp.route("/delete_all", methods=["POST"])
